@@ -129,7 +129,7 @@ prompt_battery() {
 
   elif [[ $(uname) == "Darwin" ]]; then
       function battery_is_charging() {
-        [[ $(pmset -g batt | grep -c 'discharging') -eq 0 ]]
+        echo $(pmset -g batt | grep -c 'discharging')
       }
 
       function battery_pct() {
@@ -137,7 +137,7 @@ prompt_battery() {
       }
 
       function battery_pct_remaining() {
-        if [ ! $(battery_is_charging) ] ; then
+        if [ $(battery_is_charging) -eq 1 ] ; then
           battery_pct
         else
           echo "External Power"
@@ -145,13 +145,13 @@ prompt_battery() {
       }
 
       function battery_time_remaining() {
-        if [ ! $(battery_is_charging) ] ; then
+        if [ $(battery_is_charging) -eq 1 ] ; then
           echo $(pmset -g batt | grep -E -oh '\d{1,2}:\d{1,2}')
         fi
       }
 
       b=$(battery_pct_remaining)
-      if [ ! $(battery_is_charging) ] ; then
+      if [ $(battery_is_charging) -eq 1 ] ; then
         if [ $b -gt 40 ] ; then
           prompt_segment green white
         elif [ $b -gt 20 ] ; then
