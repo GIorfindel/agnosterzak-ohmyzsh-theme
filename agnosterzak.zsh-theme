@@ -127,7 +127,41 @@ prompt_battery() {
       echo -n "$fg_bold[white]$HEART$(battery_pct_remaining)%%$fg_no_bold[white]"
     fi
 
-  fi
+  elif [[ $(uname) == "Darwin" ]]; then
+      function battery_is_charging() {
+        [[ $(pmset -g batt | grep -c 'discharging') -eq 0 ]]
+      }
+
+      function battery_pct() {
+        echo "$(pmset -g batt | grep -E -oh '\d{1,3}%' | sed 's/.$//')"
+      }
+
+      function battery_pct_remaining() {
+        if [ ! $(battery_is_charging) ] ; then
+          battery_pct
+        else
+          echo "External Power"
+        fi
+      }
+
+      function battery_time_remaining() {
+        if [ ! $(battery_is_charging) ] ; then
+          echo $(pmset -g batt | grep -E -oh '\d{1,2}:\d{1,2}')
+        fi
+      }
+
+      b=$(battery_pct_remaining)
+      if [ ! $(battery_is_charging) ] ; then
+        if [ $b -gt 40 ] ; then
+          prompt_segment green white
+        elif [ $b -gt 20 ] ; then
+          prompt_segment yellow white
+        else
+          prompt_segment red white
+        fi
+        echo -n "$fg_bold[white]$HEART$(battery_pct_remaining)%%$fg_no_bold[white]"
+      fi
+    fi
 }
 
 # Git: branch/detached head, dirty status
