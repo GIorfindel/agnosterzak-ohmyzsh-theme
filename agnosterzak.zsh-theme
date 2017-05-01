@@ -96,9 +96,7 @@ prompt_battery() {
     }
 
     function battery_pct() {
-      if (( $+commands[acpi] )) ; then
-        echo "$(acpi | cut -f2 -d ',' | tr -cd '[:digit:]')"
-      fi
+      echo "$(acpi | cut -f2 -d ',' | tr -cd '[:digit:]' | rev | cut -c 1- | rev)"
     }
 
     function battery_pct_remaining() {
