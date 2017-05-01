@@ -133,7 +133,7 @@ prompt_battery() {
       }
 
       function battery_pct() {
-        echo "$(pmset -g batt | grep -E -oh '\d{1,3}%' | sed 's/.$//')"
+        echo "$(pmset -g batt | grep -E -oh '[0-9]{1,3}%'| sed 's/.$//')"
       }
 
       function battery_pct_remaining() {
